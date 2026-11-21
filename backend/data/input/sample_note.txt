@@ -1,0 +1,10 @@
+Record ID: DOC-3001
+Patient ID: EPIC-300
+MRN: 000789
+Patient Name: Alex Morgan
+DOB: 1990-09-15
+Gender: U
+Date: 2026-11-20
+Type: imaging
+Title: CT Abdomen Report
+Content: No acute abdominal finding. Recommend clinical correlation.

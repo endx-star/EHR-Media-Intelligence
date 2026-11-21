@@ -1,0 +1,28 @@
+{
+  "records": [
+    {
+      "record_id": "DOC-1001",
+      "patient_id": "EPIC-100",
+      "mrn": " MRN-000123 ",
+      "patient_name": "Jane Doe",
+      "dob": "1980-02-03",
+      "gender": "F",
+      "record_date": "2026-11-20",
+      "type": "lab",
+      "title": "Complete Blood Count",
+      "content": "Hemoglobin 11.2 g/dL. Hematocrit 34 percent."
+    },
+    {
+      "record_id": "DOC-1002",
+      "patient_id": "EPIC-100",
+      "mrn": "MRN-000123",
+      "patient_name": "Jane Doe",
+      "dob": "02/03/1980",
+      "gender": "female",
+      "record_date": "Nov 21, 2026",
+      "type": "discharge summary",
+      "title": "Emergency Department Discharge",
+      "content": "Patient discharged home in stable condition. Follow up with primary care."
+    }
+  ]
+}

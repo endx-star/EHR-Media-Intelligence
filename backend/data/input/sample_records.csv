@@ -1,0 +1,3 @@
+record_id,patient_id,mrn,patient_name,dob,sex,date,type,title,content
+DOC-2001,EPIC-200,000456,John Smith,1975-06-12,M,2026-11-18,lab,Glucose result,Fasting glucose 132 mg/dL
+DOC-2002,EPIC-200,000456,John Smith,06/12/1975,Male,2026-11-19,imaging,Chest X-ray,No acute cardiopulmonary abnormality reported
