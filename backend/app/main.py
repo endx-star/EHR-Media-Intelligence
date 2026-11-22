@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.ingestion import router as ingestion_router
+from app.api.fhir import router as fhir_router
 from app.config import CORS_ORIGINS
 
 app = FastAPI(
@@ -25,6 +26,7 @@ app.add_middleware(
 )
 
 app.include_router(ingestion_router)
+app.include_router(fhir_router)
 
 
 @app.get("/health", tags=["System"])
