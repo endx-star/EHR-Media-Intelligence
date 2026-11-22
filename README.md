@@ -210,3 +210,54 @@ If the index has not been built, the endpoint returns HTTP 409 and instructs the
 - The current FHIR mapper represents source lab records as `DiagnosticReport`; the search index also supports `Observation` if those resources are added later.
 - Embeddings support semantic retrieval, but relevance must be evaluated against representative synthetic queries. A high similarity score does not establish clinical correctness.
 - This MVP is for synthetic data only. Do not index real patient information or deploy without authentication, patient-level authorization, audit controls, and an approved privacy/security review.
+
+
+## Task 5 — Frontend
+
+The frontend provides a responsive clinical-record search interface using HTML, Tailwind CSS, and vanilla JavaScript.
+
+### Features
+
+- Natural-language semantic search.
+- Resource type filtering.
+- Date-range filtering.
+- Configurable result count.
+- Ranked clinical search result cards.
+- Patient name and MRN display.
+- Clinical text snippets and relevance scores.
+- Record detail modal.
+- Loading, empty, and error states.
+- Keyboard-accessible modal interactions.
+- Responsive desktop, tablet, and mobile layouts.
+
+### Run the frontend
+
+Start the backend:
+
+```bash
+cd backend
+uvicorn app.main:app --reload
+```
+
+In another terminal, from the repository root:
+
+```bash
+python -m http.server 5500 --directory frontend
+```
+
+Open:
+
+http://127.0.0.1:5500
+
+The frontend communicates with the FastAPI backend at:
+
+http://127.0.0.1:8000
+
+### Frontend technology
+
+- HTML5
+- Tailwind CSS
+- Vanilla JavaScript
+- Fetch API
+
+The interface uses synthetic EHR records only and is not approved for clinical use.

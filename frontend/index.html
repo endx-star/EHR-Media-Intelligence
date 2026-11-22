@@ -1,25 +1,362 @@
+
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta
+    name="description"
+    content="Search and explore synthetic EHR clinical records using semantic search."
+  />
+
   <title>EHR Media Intelligence</title>
+
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: "#eff6ff",
+              100: "#dbeafe",
+              600: "#2563eb",
+              700: "#1d4ed8",
+              800: "#1e40af"
+            }
+          }
+        }
+      }
+    };
+  </script>
 </head>
-<body class="min-h-screen bg-slate-50 text-slate-900">
-  <main class="mx-auto max-w-5xl px-6 py-12">
-    <header class="mb-8">
-      <p class="text-sm font-semibold uppercase tracking-widest text-blue-700">Clinical workspace</p>
-      <h1 class="mt-2 text-3xl font-bold">EHR Media Intelligence</h1>
-      <p class="mt-2 text-slate-600">Search and understand patient media records in one place.</p>
+
+<body class="min-h-screen bg-slate-50 text-slate-900 antialiased">
+
+  <div class="min-h-screen">
+
+    <!-- Header -->
+    <header class="border-b border-slate-200 bg-white">
+      <div class="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
+
+        <div class="flex items-center gap-3">
+          <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-700 text-white">
+            <svg class="h-6 w-6" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 4v16m8-8H4" />
+            </svg>
+          </div>
+
+          <div>
+            <h1 class="text-lg font-bold tracking-tight">
+              EHR Intelligence
+            </h1>
+            <p class="text-xs text-slate-500">
+              Clinical records workspace
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <span id="connection-indicator"
+            class="h-2.5 w-2.5 rounded-full bg-slate-300">
+          </span>
+
+          <span id="connection-text"
+            class="hidden text-sm text-slate-500 sm:inline">
+            Checking connection
+          </span>
+        </div>
+
+      </div>
     </header>
-    <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h2 class="text-lg font-semibold">Ingestion API connection check</h2>
-      <p class="mt-1 text-sm text-slate-600">Task 1 foundation. Search UI will be added after the semantic search API is ready.</p>
-      <button id="health-check" class="mt-4 rounded-lg bg-blue-700 px-4 py-2 font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Check backend</button>
-      <p id="health-status" class="mt-3 text-sm" role="status" aria-live="polite">Backend status has not been checked.</p>
-    </section>
-  </main>
+
+
+    <!-- Main content -->
+    <main class="mx-auto max-w-7xl px-5 py-8 lg:px-8">
+
+      <!-- Page heading -->
+      <section class="mb-8">
+        <p class="text-sm font-semibold uppercase tracking-wider text-blue-700">
+          Clinical workspace
+        </p>
+
+        <h2 class="mt-2 text-3xl font-bold tracking-tight text-slate-900">
+          Clinical Records Search
+        </h2>
+
+        <p class="mt-2 max-w-2xl text-slate-600">
+          Find relevant clinical records using natural language and
+          semantic search.
+        </p>
+      </section>
+
+
+      <!-- Search panel -->
+      <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+
+        <form id="search-form">
+
+          <label for="search-query"
+            class="mb-2 block text-sm font-semibold text-slate-700">
+            What are you looking for?
+          </label>
+
+          <div class="flex flex-col gap-3 sm:flex-row">
+
+            <div class="relative flex-1">
+              <svg class="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400"
+                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="7" stroke-width="2"/>
+                <path d="m16 16 4 4" stroke-width="2"
+                  stroke-linecap="round"/>
+              </svg>
+
+              <input
+                id="search-query"
+                name="query"
+                type="text"
+                minlength="3"
+                maxlength="1000"
+                required
+                placeholder="e.g. Find blood test results showing low hemoglobin"
+                class="w-full rounded-xl border border-slate-300 py-3 pl-12 pr-4 text-sm outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+              />
+            </div>
+
+            <button
+              id="search-button"
+              type="submit"
+              class="rounded-xl bg-blue-700 px-7 py-3 text-sm font-semibold text-white transition hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              Search records
+            </button>
+
+          </div>
+
+
+          <!-- Filters -->
+          <div class="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+
+            <div>
+              <label for="resource-type"
+                class="mb-1.5 block text-sm font-medium text-slate-700">
+                Resource type
+              </label>
+
+              <select id="resource-type"
+                class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100">
+
+                <option value="">All resource types</option>
+                <option value="DiagnosticReport">Diagnostic Report</option>
+                <option value="DocumentReference">Document Reference</option>
+                <option value="Observation">Observation</option>
+
+              </select>
+            </div>
+
+
+            <div>
+              <label for="date-from"
+                class="mb-1.5 block text-sm font-medium text-slate-700">
+                From date
+              </label>
+
+              <input
+                id="date-from"
+                type="date"
+                class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+              />
+            </div>
+
+
+            <div>
+              <label for="date-to"
+                class="mb-1.5 block text-sm font-medium text-slate-700">
+                To date
+              </label>
+
+              <input
+                id="date-to"
+                type="date"
+                class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+              />
+            </div>
+
+
+            <div>
+              <label for="top-k"
+                class="mb-1.5 block text-sm font-medium text-slate-700">
+                Results per search
+              </label>
+
+              <select id="top-k"
+                class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100">
+
+                <option value="5" selected>5 results</option>
+                <option value="10">10 results</option>
+                <option value="15">15 results</option>
+                <option value="20">20 results</option>
+
+              </select>
+            </div>
+
+          </div>
+
+          <div class="mt-4 flex justify-end">
+            <button id="clear-filters"
+              type="button"
+              class="text-sm font-medium text-slate-500 hover:text-blue-700">
+              Clear filters
+            </button>
+          </div>
+
+        </form>
+      </section>
+
+
+      <!-- Search feedback -->
+      <section class="mt-8">
+
+        <div class="mb-4 flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
+
+          <div>
+            <h3 class="text-lg font-bold text-slate-900">
+              Search results
+            </h3>
+
+            <p id="results-description" class="mt-1 text-sm text-slate-500">
+              Enter a search query to find clinical records.
+            </p>
+          </div>
+
+          <p id="search-time"
+            class="text-sm text-slate-500">
+          </p>
+
+        </div>
+
+
+        <!-- Loading state -->
+        <div id="loading-state"
+             role="status"
+             aria-live="polite"
+             class="hidden rounded-xl border border-slate-200 bg-white p-10 text-center">
+
+          <div class="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-blue-700"></div>
+
+          <p class="mt-4 text-sm font-medium text-slate-600">
+            Searching clinical records...
+          </p>
+
+        </div>
+
+
+        <!-- Error state -->
+        <div id="error-state"
+          class="hidden rounded-xl border border-red-200 bg-red-50 p-5 text-sm text-red-700"
+          role="alert">
+        </div>
+
+
+        <!-- Empty state -->
+        <div id="empty-state"
+          class="rounded-xl border border-dashed border-slate-300 bg-white px-5 py-14 text-center">
+
+          <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100">
+            <svg class="h-6 w-6 text-slate-500"
+              fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <circle cx="11" cy="11" r="7" stroke-width="2"/>
+              <path d="m16 16 4 4" stroke-width="2"
+                stroke-linecap="round"/>
+            </svg>
+          </div>
+
+          <h4 class="mt-4 font-semibold text-slate-800">
+            Ready to search
+          </h4>
+
+          <p class="mt-1 text-sm text-slate-500">
+            Enter a clinical question above to discover relevant records.
+          </p>
+
+        </div>
+
+
+        <!-- Results container -->
+        <div id="results-container"
+            class="hidden space-y-4"
+            role="region"
+            aria-label="Clinical search results"
+            aria-live="polite"
+            aria-busy="false">
+
+      </section>
+
+
+      <!-- Disclaimer -->
+      <footer class="mt-12 border-t border-slate-200 pt-5">
+        <p class="text-xs leading-relaxed text-slate-500">
+          <strong>Development disclaimer:</strong>
+          This application uses synthetic data for demonstration and
+          development purposes only. It is not approved for clinical use
+          and must not be used to make patient-care decisions.
+        </p>
+      </footer>
+
+    </main>
+
+  </div>
+
+
+  <!-- Record detail modal -->
+  <div id="detail-modal"
+    class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/50 p-4"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modal-title">
+
+    <div class="max-h-[85vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white shadow-xl">
+
+      <div class="flex items-start justify-between border-b border-slate-200 p-5">
+
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wider text-blue-700">
+            Clinical record details
+          </p>
+
+          <h3 id="modal-title"
+            class="mt-1 text-xl font-bold text-slate-900">
+          </h3>
+        </div>
+
+        <button id="close-modal"
+          type="button"
+          aria-label="Close details"
+          class="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900">
+
+          <svg class="h-5 w-5" fill="none" stroke="currentColor"
+            viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              stroke-width="2" d="m6 6 12 12M18 6 6 18"/>
+          </svg>
+
+        </button>
+
+      </div>
+
+      <div id="modal-content" class="space-y-5 p-5">
+      </div>
+
+    </div>
+  </div>
+
+
   <script src="./js/api.js"></script>
+
 </body>
 </html>
