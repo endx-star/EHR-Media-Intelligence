@@ -14,3 +14,13 @@ With more time, the system should add robust OCR for scanned PDFs, terminology m
 - **Encounter generation:** Input files do not provide encounter identifiers. A synthetic Encounter is generated per source record to provide a resolvable context reference. A production mapping should use source encounter IDs and must not invent clinical encounters.
 - **Identity collisions:** Task 1 collision flags prevent automatic merging. The FHIR layer assigns separate generated patient IDs to conflicting identities pending manual reconciliation.
 - **Validation scope:** Pydantic FHIR model validation plus local-reference checks provide useful structural safeguards. Full conformance requires the official HL7 validator, profiles, terminology services, and implementation-guide-specific rules.
+
+
+## Task 4 — Semantic search trade-offs
+
+- **Embedding model:** `sentence-transformers/all-MiniLM-L6-v2` runs locally and avoids sending search text to a third-party embedding API. The first model load/download has startup cost; subsequent calls use the local cache.
+- **Vector database:** ChromaDB provides persistent local vector storage and metadata filtering with little operational setup. The FHIR SQLite database remains authoritative; the vector collection is rebuildable derived data.
+- **Indexing strategy:** an explicit reindex endpoint keeps ingestion and embedding concerns separate. Reindexing uses deterministic document IDs, upserts current records, and removes stale entries.
+- **Search scoring:** Chroma cosine distance is converted to a 0–1 relevance indicator for display. It is not a probability, diagnostic confidence, or clinical assessment.
+- **Supported content:** the index extracts text from DiagnosticReport conclusions, text DocumentReference attachments, and Observation values. Binary PDF/image OCR and advanced terminology expansion are not implemented.
+- **Performance:** the model is loaded lazily and reused in-process. The first request includes model initialization; performance measurements should warm the model first and then measure queries against the assignment's 50-record dataset.

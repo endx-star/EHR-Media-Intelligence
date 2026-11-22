@@ -46,3 +46,13 @@ def get_bundles_for_patient(patient_id: str) -> list[dict]:
             (patient_id,),
         ).fetchall()
     return [json.loads(row[0]) for row in rows]
+
+
+
+def get_all_bundles() -> list[dict]:
+    """Return every stored FHIR Bundle for building/rebuilding the search index."""
+    with _connect() as conn:
+        rows = conn.execute(
+            "SELECT bundle_json FROM fhir_bundles ORDER BY created_at DESC"
+        ).fetchall()
+    return [json.loads(row[0]) for row in rows]

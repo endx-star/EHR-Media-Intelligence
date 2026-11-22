@@ -40,3 +40,19 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY", "").strip()
 GROQ_MODEL = os.getenv("GROQ_MODEL", "").strip()
 
 SUMMARY_MAX_WORDS = int(os.getenv("SUMMARY_MAX_WORDS", "200"))
+
+
+# Task 4: semantic search configuration
+EMBEDDING_MODEL = os.getenv(
+    "EMBEDDING_MODEL", "sentence-transformers/all-MiniLM-L6-v2"
+).strip()
+EMBEDDING_DEVICE = os.getenv("EMBEDDING_DEVICE", "cpu").strip()
+_vector_store_path = Path(
+    os.getenv("VECTOR_STORE_DIR", str(BASE_DIR / "storage" / "chroma"))
+).expanduser()
+VECTOR_STORE_DIR = (
+    _vector_store_path if _vector_store_path.is_absolute()
+    else (BASE_DIR / _vector_store_path)
+).resolve()
+SEARCH_DEFAULT_TOP_K = int(os.getenv("SEARCH_DEFAULT_TOP_K", "5"))
+SEARCH_MAX_TOP_K = int(os.getenv("SEARCH_MAX_TOP_K", "20"))

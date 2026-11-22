@@ -65,3 +65,4 @@ models_cache/
 build/
 dist/
 *.egg-info/
+\n# Persistent semantic-search vector index\nbackend/storage/chroma/\n

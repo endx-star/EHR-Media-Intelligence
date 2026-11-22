@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.ingestion import router as ingestion_router
 from app.api.fhir import router as fhir_router
 from app.api.summaries import router as summaries_router
+from app.api.search import router as search_router
 from app.config import CORS_ORIGINS
 
 
@@ -14,7 +15,7 @@ app = FastAPI(
         "Synthetic-data MVP for EHR media ingestion, normalization, "
         "summarization, and search. Not approved for clinical use."
     ),
-    version="0.1.2",
+    version="0.1.3",
 )
 
 app.add_middleware(
@@ -28,6 +29,7 @@ app.add_middleware(
 app.include_router(ingestion_router)
 app.include_router(fhir_router)
 app.include_router(summaries_router)
+app.include_router(search_router)
 
 
 @app.get("/health", tags=["System"])
