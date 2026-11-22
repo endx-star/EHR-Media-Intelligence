@@ -1,9 +1,12 @@
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.ingestion import router as ingestion_router
 from app.api.fhir import router as fhir_router
+from app.api.summaries import router as summaries_router
 from app.config import CORS_ORIGINS
+
 
 app = FastAPI(
     title="EHR Media Intelligence Platform",
@@ -11,12 +14,9 @@ app = FastAPI(
         "Synthetic-data MVP for EHR media ingestion, normalization, "
         "summarization, and search. Not approved for clinical use."
     ),
-    version="0.1.1",
+    version="0.1.2",
 )
 
-# Explicit local origins by default. Set CORS_ORIGINS to a comma-separated
-# allowlist when deploying the frontend. Never use wildcard origins with
-# credentialed requests.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=CORS_ORIGINS,
@@ -27,6 +27,7 @@ app.add_middleware(
 
 app.include_router(ingestion_router)
 app.include_router(fhir_router)
+app.include_router(summaries_router)
 
 
 @app.get("/health", tags=["System"])

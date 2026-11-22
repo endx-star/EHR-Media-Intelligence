@@ -28,3 +28,15 @@ CORS_ORIGINS = [
 
 for directory in (INPUT_DIR, PROCESSED_DIR):
     directory.mkdir(parents=True, exist_ok=True)
+
+
+# Task 3: LLM provider configuration
+LLM_PROVIDER = os.getenv("LLM_PROVIDER", "openai").strip().lower()
+
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "").strip()
+OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4.1-mini").strip()
+
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "").strip()
+GROQ_MODEL = os.getenv("GROQ_MODEL", "").strip()
+
+SUMMARY_MAX_WORDS = int(os.getenv("SUMMARY_MAX_WORDS", "200"))
