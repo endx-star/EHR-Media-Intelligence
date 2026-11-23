@@ -80,16 +80,6 @@ curl -X POST "http://127.0.0.1:8000/ingestion/upload" \
   -F "file=@data/input/sample_records.json"
 ```
 
-## Frontend preview
-
-From the repository root, run:
-
-```bash
-python -m http.server 5500 --directory frontend
-```
-
-Open http://127.0.0.1:5500.
-
 ## Data safety
 
 Use synthetic data only in this development project. Do not upload real patient information to an unapproved environment or LLM provider. Before real clinical deployment, implement authentication, authorization, audit retention, encryption, secure hosting, clinical validation, and applicable regulatory review.
